@@ -13,6 +13,8 @@
 		9E3CC3021B0A83FE0079573A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E3CC3011B0A83FE0079573A /* Images.xcassets */; };
 		9E3CC3051B0A83FE0079573A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E3CC3031B0A83FE0079573A /* LaunchScreen.xib */; };
 		9E3CC3111B0A83FE0079573A /* TimeLapseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CC3101B0A83FE0079573A /* TimeLapseTests.swift */; };
+		9E6B31851B0BC317002E94F1 /* ViewConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6B31841B0BC317002E94F1 /* ViewConfiguration.swift */; };
+		9E6B31871B0BDBB8002E94F1 /* TimeLapseFotoGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6B31861B0BDBB8002E94F1 /* TimeLapseFotoGenerator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +38,8 @@
 		9E3CC30A1B0A83FE0079573A /* TimeLapseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TimeLapseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E3CC30F1B0A83FE0079573A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9E3CC3101B0A83FE0079573A /* TimeLapseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLapseTests.swift; sourceTree = "<group>"; };
+		9E6B31841B0BC317002E94F1 /* ViewConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewConfiguration.swift; sourceTree = "<group>"; };
+		9E6B31861B0BDBB8002E94F1 /* TimeLapseFotoGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeLapseFotoGenerator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,7 +81,9 @@
 		9E3CC2F71B0A83FE0079573A /* TimeLapse */ = {
 			isa = PBXGroup;
 			children = (
+				9E6B31831B0BC196002E94F1 /* Config */,
 				9E3CC2FA1B0A83FE0079573A /* AppDelegate.swift */,
+				9E6B31861B0BDBB8002E94F1 /* TimeLapseFotoGenerator.swift */,
 				9E3CC2FC1B0A83FE0079573A /* ViewController.swift */,
 				9E3CC2FE1B0A83FE0079573A /* Main.storyboard */,
 				9E3CC3011B0A83FE0079573A /* Images.xcassets */,
@@ -110,6 +116,14 @@
 				9E3CC30F1B0A83FE0079573A /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		9E6B31831B0BC196002E94F1 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				9E6B31841B0BC317002E94F1 /* ViewConfiguration.swift */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -212,7 +226,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E6B31851B0BC317002E94F1 /* ViewConfiguration.swift in Sources */,
 				9E3CC2FD1B0A83FE0079573A /* ViewController.swift in Sources */,
+				9E6B31871B0BDBB8002E94F1 /* TimeLapseFotoGenerator.swift in Sources */,
 				9E3CC2FB1B0A83FE0079573A /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -411,6 +427,7 @@
 				9E3CC3161B0A83FE0079573A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		9E3CC3171B0A83FE0079573A /* Build configuration list for PBXNativeTarget "TimeLapseTests" */ = {
 			isa = XCConfigurationList;
@@ -419,6 +436,7 @@
 				9E3CC3191B0A83FE0079573A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

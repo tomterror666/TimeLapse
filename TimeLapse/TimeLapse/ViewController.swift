@@ -29,6 +29,12 @@ class ViewController: UIViewController {
 	
 	override func viewWillAppear(animated: Bool) {
 		super.viewWillAppear(animated)
+		
+		ViewConfiguration.configureLabelWithFontAndTitle(self.durationLabel, font: RunningText17, title: "")
+		ViewConfiguration.configureButtonWithFontAndTitle(self.startStopButton, font: RunningTextBold19, title: "Start")
+		ViewConfiguration.configureButtonWithFontAndTitle(self.playButton, font: RunningTextBold19, title: "Play")
+		ViewConfiguration.configureButtonWithFontAndTitle(self.prevButton, font: RunningTextLight15, title: "Previous")
+		ViewConfiguration.configureButtonWithFontAndTitle(self.nextButton, font: RunningTextLight15, title: "Next")
 	}
 
 	override func didReceiveMemoryWarning() {
