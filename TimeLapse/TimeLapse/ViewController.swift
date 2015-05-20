@@ -11,7 +11,7 @@ import UIKit
 let startButtonTag = 1111
 let stopButtonTag = 9999
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, TimeLapseFotoGeneratorDelegate {
 
 	@IBOutlet weak var durationLabel: UILabel!
 	@IBOutlet weak var startStopButton: UIButton!
@@ -21,10 +21,12 @@ class ViewController: UIViewController {
 	@IBOutlet weak var prevButton: UIButton!
 	@IBOutlet weak var nextButton: UIButton!
 	
+	var fotoGenerator:TimeLapseFotoGenerator!
+	
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		// Do any additional setup after loading the view, typically from a nib.
+		self.fotoGenerator = TimeLapseFotoGenerator(delegate: self)
 	}
 	
 	override func viewWillAppear(animated: Bool) {
@@ -47,8 +49,17 @@ class ViewController: UIViewController {
 	*/
 	
 	@IBAction func startStopButtonTouched(startStopButton: UIButton) {
-		startStopButton.setTitle(startStopButton.tag == stopButtonTag ? "Start" : "Stop", forState:UIControlState.Normal)
-		startStopButton.tag = startStopButton.tag == stopButtonTag ? startButtonTag : stopButtonTag
+		if (startStopButton.tag == stopButtonTag) {
+			startStopButton.setTitle("Start", forState:UIControlState.Normal)
+			startStopButton.tag = startButtonTag
+			fotoGenerator.stopTimeLapsing()
+		} else {
+			startStopButton.setTitle("Stop", forState:UIControlState.Normal)
+			startStopButton.tag = stopButtonTag
+			fotoGenerator.startTimeLapsing()
+		}
+		
+		
 	}
 	
 	@IBAction func playButtonTouched(AnyObject) {
