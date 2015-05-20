@@ -90,6 +90,8 @@ class ViewController: UIViewController, TimeLapseFotoGeneratorDelegate {
 		if (self.startStopButton.tag == stopButtonTag) {
 			self.setStartStatusToButton()
 		}
+		let dataHandler:DataHandler = DataHandler.sharedDataHandler
+		let imageContent = dataHandler.getContentOfDataDirectory()
 	}
 	
 	func timeLapseFotoGeneratorHasFinishedByError(generator: TimeLapseFotoGenerator, error: NSError) {

@@ -15,6 +15,7 @@
 		9E3CC3111B0A83FE0079573A /* TimeLapseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CC3101B0A83FE0079573A /* TimeLapseTests.swift */; };
 		9E6B31851B0BC317002E94F1 /* ViewConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6B31841B0BC317002E94F1 /* ViewConfiguration.swift */; };
 		9E6B31871B0BDBB8002E94F1 /* TimeLapseFotoGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6B31861B0BDBB8002E94F1 /* TimeLapseFotoGenerator.swift */; };
+		E88414B81B0CD77C00942D35 /* DataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88414B71B0CD77C00942D35 /* DataHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,7 @@
 		9E3CC3101B0A83FE0079573A /* TimeLapseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLapseTests.swift; sourceTree = "<group>"; };
 		9E6B31841B0BC317002E94F1 /* ViewConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewConfiguration.swift; sourceTree = "<group>"; };
 		9E6B31861B0BDBB8002E94F1 /* TimeLapseFotoGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeLapseFotoGenerator.swift; sourceTree = "<group>"; };
+		E88414B71B0CD77C00942D35 /* DataHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataHandler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +85,7 @@
 			children = (
 				9E6B31831B0BC196002E94F1 /* Config */,
 				9E3CC2FA1B0A83FE0079573A /* AppDelegate.swift */,
+				E88414B71B0CD77C00942D35 /* DataHandler.swift */,
 				9E6B31861B0BDBB8002E94F1 /* TimeLapseFotoGenerator.swift */,
 				9E3CC2FC1B0A83FE0079573A /* ViewController.swift */,
 				9E3CC2FE1B0A83FE0079573A /* Main.storyboard */,
@@ -230,6 +233,7 @@
 				9E3CC2FD1B0A83FE0079573A /* ViewController.swift in Sources */,
 				9E6B31871B0BDBB8002E94F1 /* TimeLapseFotoGenerator.swift in Sources */,
 				9E3CC2FB1B0A83FE0079573A /* AppDelegate.swift in Sources */,
+				E88414B81B0CD77C00942D35 /* DataHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,9 +9,9 @@
 import UIKit
 import AVFoundation
 
-protocol TimeLapseFotoGeneratorDelegate {
-	func timeLapseFotoGeneratorHasFinishedSuccessful(generator:TimeLapseFotoGenerator)
-	func timeLapseFotoGeneratorHasFinishedByError(generator:TimeLapseFotoGenerator, error:NSError)
+@objc protocol TimeLapseFotoGeneratorDelegate {
+	 func timeLapseFotoGeneratorHasFinishedSuccessful(generator:TimeLapseFotoGenerator)
+	optional func timeLapseFotoGeneratorHasFinishedByError(generator:TimeLapseFotoGenerator, error:NSError)
 }
 
 class TimeLapseFotoGenerator: NSObject {
@@ -21,18 +21,21 @@ class TimeLapseFotoGenerator: NSObject {
 	var numberOfImages:UInt32 = 0
 	var generatorTimer:NSTimer!
 	var imageCounter:UInt32 = 0
+	let dataHandler:DataHandler = DataHandler.sharedDataHandler
 	
 	init(viewController:UIViewController, delegate:TimeLapseFotoGeneratorDelegate) {
 		self.delegate = delegate
 		self.baseViewController = viewController
 	
 		super.init()
-		self.generatorTimer = self.createNewTimer(1.0)
+		self.generatorTimer = self.createNewTimer(5.0)
+		self.dataHandler.clearDataDirectory()
 	}
 	
 	func startTimeLapsing() {
 		self.endlessRecording = true
 		self.imageCounter = 0
+		self.dataHandler.clearDataDirectory()
 		self.addTimerToRunloop()
 	}
 	
@@ -40,12 +43,13 @@ class TimeLapseFotoGenerator: NSObject {
 		self.endlessRecording = false
 		self.numberOfImages = numberOfImages
 		self.imageCounter = 0
+		self.dataHandler.clearDataDirectory()
 		self.addTimerToRunloop()
 	}
 	
 	func stopTimeLapsing() {
 		self.generatorTimer.invalidate()
-		self.generatorTimer = self.createNewTimer(1.0)
+		self.generatorTimer = self.createNewTimer(5.0)
 		self.delegate?.timeLapseFotoGeneratorHasFinishedSuccessful(self)
 	}
 	
@@ -93,6 +97,7 @@ class TimeLapseFotoGenerator: NSObject {
 		
 		stillImageOutput.captureStillImageAsynchronouslyFromConnection(videoConnection, completionHandler: { (imageSampleBuffer:CMSampleBuffer!, error:NSError!) -> Void in
 			let imageData:NSData = self.imageDataFromSampleBuffer(imageSampleBuffer)
+			self.dataHandler.storeData(imageData, withName: "timeLapsImage_\(self.imageCounter).jpg")
 			let formatter:NSDateFormatter = NSDateFormatter()
 			formatter.dateStyle = NSDateFormatterStyle.ShortStyle
 			formatter.timeStyle = NSDateFormatterStyle.LongStyle
@@ -117,7 +122,7 @@ class TimeLapseFotoGenerator: NSObject {
 		NSRunLoop.currentRunLoop().addTimer(self.generatorTimer, forMode: NSDefaultRunLoopMode)
 	}
 	
-	@objc func getCurrentImage() {
+	func getCurrentImage() {
 		let formatter:NSDateFormatter = NSDateFormatter()
 		formatter.dateStyle = NSDateFormatterStyle.ShortStyle
 		formatter.timeStyle = NSDateFormatterStyle.LongStyle
