@@ -26,7 +26,7 @@ class ViewController: UIViewController, TimeLapseFotoGeneratorDelegate {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		self.fotoGenerator = TimeLapseFotoGenerator(delegate: self)
+		self.fotoGenerator = TimeLapseFotoGenerator(viewController: self, delegate: self)
 	}
 	
 	override func viewWillAppear(animated: Bool) {
@@ -50,12 +50,10 @@ class ViewController: UIViewController, TimeLapseFotoGeneratorDelegate {
 	
 	@IBAction func startStopButtonTouched(startStopButton: UIButton) {
 		if (startStopButton.tag == stopButtonTag) {
-			startStopButton.setTitle("Start", forState:UIControlState.Normal)
-			startStopButton.tag = startButtonTag
+			self.setStartStatusToButton()
 			fotoGenerator.stopTimeLapsing()
 		} else {
-			startStopButton.setTitle("Stop", forState:UIControlState.Normal)
-			startStopButton.tag = stopButtonTag
+			self.setStopStatusToButton()
 			fotoGenerator.startTimeLapsing()
 		}
 		
@@ -71,6 +69,30 @@ class ViewController: UIViewController, TimeLapseFotoGeneratorDelegate {
 	}
 	
 	@IBAction func nextButtonTouched(AnyObject) {
+		
+	}
+	
+	func setStartStatusToButton() {
+		startStopButton.setTitle("Start", forState:UIControlState.Normal)
+		startStopButton.tag = startButtonTag
+	}
+	
+	func setStopStatusToButton() {
+		startStopButton.setTitle("Stop", forState:UIControlState.Normal)
+		startStopButton.tag = stopButtonTag
+	}
+	
+	/*
+		// MARK: - timelapsegeneratordelegate implementation
+	*/
+	
+	func timeLapseFotoGeneratorHasFinishedSuccessful(generator: TimeLapseFotoGenerator) {
+		if (self.startStopButton.tag == stopButtonTag) {
+			self.setStartStatusToButton()
+		}
+	}
+	
+	func timeLapseFotoGeneratorHasFinishedByError(generator: TimeLapseFotoGenerator, error: NSError) {
 		
 	}
 	
