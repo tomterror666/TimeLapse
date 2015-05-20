@@ -16,7 +16,7 @@ class DataHandler: NSObject {
 	static let sharedDataHandler = DataHandler()
 	
 	override init() {
-		basePath = NSTemporaryDirectory() + "/TimeLapse/"
+		basePath = NSTemporaryDirectory() + "TimeLapse/"
 		fileManager = NSFileManager.defaultManager()
 		fileManager.createDirectoryAtPath(basePath, withIntermediateDirectories:true, attributes:nil, error:nil)
 		super.init()
@@ -34,9 +34,11 @@ class DataHandler: NSObject {
 	}
 	
 	func getContentOfDataDirectory() -> NSArray {
-		let result:NSArray = fileManager.contentsOfDirectoryAtPath(basePath, error:nil)!
-		result.enumerateObjectsUsingBlock { (fileName:AnyObject!, index:Int, stop:UnsafeMutablePointer<ObjCBool>) -> Void in
-			
+		let contents:NSArray = fileManager.contentsOfDirectoryAtPath(basePath, error:nil)!
+		let result:NSMutableArray = NSMutableArray()
+		contents.enumerateObjectsUsingBlock { (fileName:AnyObject!, index:Int, stop:UnsafeMutablePointer<ObjCBool>) -> Void in
+			let fullFileNameString:String = fileName as! String
+			result.addObject(self.basePath + fullFileNameString)
 		}
 		return result
 	}

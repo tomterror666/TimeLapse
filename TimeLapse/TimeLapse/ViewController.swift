@@ -43,6 +43,10 @@ class ViewController: UIViewController, TimeLapseFotoGeneratorDelegate {
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.
 	}
+	
+	func enableHiddenViews() {
+		self.imageScrollView.hidden = false
+	}
 
 	/*
 	// MARK: - button handling
@@ -92,6 +96,9 @@ class ViewController: UIViewController, TimeLapseFotoGeneratorDelegate {
 		}
 		let dataHandler:DataHandler = DataHandler.sharedDataHandler
 		let imageContent = dataHandler.getContentOfDataDirectory()
+		let imageHandler = SlidingImagesHandler(baseScrollView: self.imageScrollView, imageNames:imageContent as! [String])
+		imageHandler.addImages()
+		self.enableHiddenViews()
 	}
 	
 	func timeLapseFotoGeneratorHasFinishedByError(generator: TimeLapseFotoGenerator, error: NSError) {
