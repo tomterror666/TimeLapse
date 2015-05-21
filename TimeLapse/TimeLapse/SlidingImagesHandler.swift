@@ -25,9 +25,10 @@ class SlidingImagesHandler: NSObject {
 		let dataSourceCount:CGFloat = CGFloat(self.dataSource.count)
 		self.baseScrollView.contentSize = CGSizeMake(self.baseScrollView.frame.size.width * dataSourceCount, self.baseScrollView.frame.size.height)
 		self.dataSource.enumerateObjectsUsingBlock { (object:AnyObject!, index:Int, stop:UnsafeMutablePointer<ObjCBool>) -> Void in
-			let x = CGFloat(index) * self.baseScrollView.frame.size.width + (self.baseScrollView.frame.size.width - imageWidth) / 2
-			let y = (self.baseScrollView.frame.size.height - imageHeight) / 2
-			self.baseScrollView.addSubview(self.getImageViewForImage(self.getImage(object as! String), rect:CGRectMake(x, y, imageWidth, imageHeight)))
+			let x = CGFloat(index) * self.baseScrollView.frame.size.width + (self.baseScrollView.frame.size.width - imageWidth) / 2 + self.baseScrollView.frame.origin.x
+			let y = (self.baseScrollView.frame.size.height - imageHeight) / 2 + self.baseScrollView.frame.origin.y
+			let usedRect = self.baseScrollView.convertRect(CGRectMake(x, y, imageWidth, imageHeight), fromView:self.baseScrollView.superview)
+			self.baseScrollView.addSubview(self.getImageViewForImage(self.getImage(object as! String), rect:usedRect))
 		}
 	}
 	
@@ -37,9 +38,10 @@ class SlidingImagesHandler: NSObject {
 	}
 	
 	func getImageViewForImage(image:UIImage, rect:CGRect) -> UIImageView {
-		let result = UIImageView(image:image)
-		result.frame = rect
+		let result = UIImageView(frame:rect)
 		result.contentMode = UIViewContentMode.ScaleAspectFit
+		result.image = image
+		result.autoresizingMask = UIViewAutoresizing.None
 		return result
 	}
 }
