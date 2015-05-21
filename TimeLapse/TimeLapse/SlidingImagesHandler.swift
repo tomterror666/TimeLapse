@@ -32,6 +32,13 @@ class SlidingImagesHandler: NSObject {
 		}
 	}
 	
+	func reset() {
+		self.baseScrollView.contentSize = self.baseScrollView.frame.size
+		(self.baseScrollView.subviews as NSArray).enumerateObjectsUsingBlock { (object:AnyObject!, index:Int, stop:UnsafeMutablePointer<ObjCBool>) -> Void in
+			(object as! UIView).removeFromSuperview()
+		}
+	}
+	
 	func getImage(fullImageFileName:String) -> UIImage {
 		let result = UIImage(contentsOfFile: fullImageFileName)!
 		return result

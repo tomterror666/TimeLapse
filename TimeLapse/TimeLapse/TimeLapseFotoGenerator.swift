@@ -72,11 +72,26 @@ class TimeLapseFotoGenerator: NSObject {
 		
 		let device:AVCaptureDevice = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
 		let error:NSErrorPointer = nil
+		device.lockForConfiguration(error)
+		if (device.isFocusModeSupported(AVCaptureFocusMode.ContinuousAutoFocus)) {
+			device.focusMode = AVCaptureFocusMode.ContinuousAutoFocus
+		}
+		if (device.smoothAutoFocusSupported) {
+			device.smoothAutoFocusEnabled = true
+		}
+		if (device.lowLightBoostSupported) {
+			device.automaticallyEnablesLowLightBoostWhenAvailable = true
+		}
+		device.whiteBalanceMode = AVCaptureWhiteBalanceMode.ContinuousAutoWhiteBalance
+		device.exposureMode = AVCaptureExposureMode.ContinuousAutoExposure
+		device.unlockForConfiguration()
 		let input:AVCaptureDeviceInput = AVCaptureDeviceInput.deviceInputWithDevice(device, error:error) as! AVCaptureDeviceInput
 		session.addInput(input)
 		
 		let stillImageOutput:AVCaptureStillImageOutput = AVCaptureStillImageOutput()
-		stillImageOutput.outputSettings = [AVVideoCodecKey: AVVideoCodecJPEG]
+		//stillImageOutput.outputSettings = [AVVideoCodecKey: AVVideoCodecJPEG]
+		stillImageOutput.outputSettings = [kCVPixelBufferPixelFormatTypeKey: kCVPixelFormatType_32BGRA]
+		stillImageOutput.highResolutionStillImageOutputEnabled = true
 		session.addOutput(stillImageOutput)
 		var videoConnection:AVCaptureConnection?
 		let connections:[AVCaptureConnection] = stillImageOutput.connections as! [AVCaptureConnection]
@@ -107,7 +122,25 @@ class TimeLapseFotoGenerator: NSObject {
 	}
 	
 	func imageDataFromSampleBuffer(sampleBuffer:CMSampleBuffer) -> NSData {
-		return AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sampleBuffer)
+		let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
+		if (imageBuffer == nil) {
+			return AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sampleBuffer)
+		} else {
+			CVPixelBufferLockBaseAddress(imageBuffer, 0)
+			let baseAddress = CVPixelBufferGetBaseAddress(imageBuffer)
+			let bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer)
+			let width = CVPixelBufferGetWidth(imageBuffer)
+			let height = CVPixelBufferGetHeight(imageBuffer)
+			let context = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, CGColorSpaceCreateDeviceRGB(), CGBitmapInfo.ByteOrder32Little | CGBitmapInfo(CGImageAlphaInfo.PremultipliedFirst.rawValue))
+			let imageRef = CGBitmapContextCreateImage(context)
+			
+			let resultCtx = CGBitmapContextCreate(nil, height, width, 8, height * 4, CGColorSpaceCreateDeviceRGB(), CGBitmapInfo(CGImageAlphaInfo.PremultipliedLast.rawValue))
+			CGContextRotateCTM(resultCtx, CGFloat(-M_2_PI))
+			CGContextDrawImage(resultCtx, CGRectMake(/*CGFloat((height-width)/2+height)*/0, /*CGFloat((width-height)/2)*/0, CGFloat(width), CGFloat(height)), imageRef)
+//			CGContextRotateCTM(resultCtx, CGFloat(-M_2_PI))
+						
+			return UIImageJPEGRepresentation(UIImage(CGImage: CGBitmapContextCreateImage(resultCtx)), 0.8)
+		}
 	}
 	
 	/*
