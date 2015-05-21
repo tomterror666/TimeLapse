@@ -68,6 +68,11 @@
                                 <rect key="frame" x="16" y="508" width="288" height="2"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </progressView>
+                            <view contentMode="scaleToFill" id="Tqd-Us-492">
+                                <rect key="frame" x="16" y="148" width="288" height="352"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -78,6 +83,7 @@
                         <outlet property="nextButton" destination="k72-3b-a0Z" id="dM0-Ih-t4P"/>
                         <outlet property="playButton" destination="Duh-kJ-4Ca" id="lBi-g8-NLh"/>
                         <outlet property="prevButton" destination="7Ap-l5-Xef" id="sa9-Rm-WRI"/>
+                        <outlet property="previewView" destination="Tqd-Us-492" id="ZVq-y3-pcD"/>
                         <outlet property="startStopButton" destination="IAH-ym-BgQ" id="bxi-og-XUe"/>
                     </connections>
                 </viewController>

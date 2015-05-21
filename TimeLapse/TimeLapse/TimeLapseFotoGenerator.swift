@@ -22,12 +22,25 @@ class TimeLapseFotoGenerator: NSObject {
 	var generatorTimer:NSTimer!
 	var imageCounter:UInt32 = 0
 	let dataHandler:DataHandler = DataHandler.sharedDataHandler
+	var previewView:UIView?
+	var session:AVCaptureSession?
+	var device:AVCaptureDevice?
+	var input:AVCaptureDeviceInput?
 	
-	init(viewController:UIViewController, delegate:TimeLapseFotoGeneratorDelegate) {
+	init(viewController:UIViewController, withPreviewView previewView:UIView?, withDelegate delegate:TimeLapseFotoGeneratorDelegate) {
 		self.delegate = delegate
 		self.baseViewController = viewController
-	
+		
 		super.init()
+		
+		self.session = AVCaptureSession()
+		self.configureCaptureSession()
+		self.previewView = previewView
+		self.configurePreviewView()
+		self.device = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
+		self.input = AVCaptureDeviceInput.deviceInputWithDevice(self.device, error:nil) as? AVCaptureDeviceInput
+		self.configureCaptureDevice()
+		
 		self.generatorTimer = self.createNewTimer(5.0)
 		self.dataHandler.clearDataDirectory()
 	}
@@ -37,20 +50,65 @@ class TimeLapseFotoGenerator: NSObject {
 		self.imageCounter = 0
 		self.dataHandler.clearDataDirectory()
 		self.addTimerToRunloop()
+		self.session!.startRunning()
 	}
 	
-	func startTimeLapsing(numberOfImages:UInt32) {
+	func startTimeLapsingWithNumberOfImages(numberOfImages:UInt32) {
 		self.endlessRecording = false
 		self.numberOfImages = numberOfImages
 		self.imageCounter = 0
 		self.dataHandler.clearDataDirectory()
 		self.addTimerToRunloop()
+		self.session!.startRunning()
 	}
 	
 	func stopTimeLapsing() {
 		self.generatorTimer.invalidate()
 		self.generatorTimer = self.createNewTimer(5.0)
 		self.delegate?.timeLapseFotoGeneratorHasFinishedSuccessful(self)
+		self.session!.stopRunning()
+	}
+	
+	func configureCaptureSession() {
+		self.session!.sessionPreset = AVCaptureSessionPresetHigh
+	}
+	
+	func configurePreviewView() {
+		if (self.previewView != nil) {
+			let previewLayer:AVCaptureVideoPreviewLayer = AVCaptureVideoPreviewLayer.layerWithSession(session) as! AVCaptureVideoPreviewLayer
+			previewLayer.frame = self.previewView!.bounds
+			self.previewView?.layer.addSublayer(previewLayer)
+		}
+	}
+	
+	func resetPreviewView() {
+		if (self.previewView != nil) {
+			for layer:CALayer in self.previewView?.layer.sublayers as! [CALayer] {
+				if (layer.isKindOfClass(AVCaptureVideoPreviewLayer)) {
+					layer.removeFromSuperlayer()
+					break
+				}
+			}
+		}
+	}
+	
+	func configureCaptureDevice() {
+		let error:NSErrorPointer = nil
+		self.device!.lockForConfiguration(error)
+		if (self.device!.isFocusModeSupported(AVCaptureFocusMode.ContinuousAutoFocus)) {
+			self.device!.focusMode = AVCaptureFocusMode.ContinuousAutoFocus
+		}
+		if (self.device!.smoothAutoFocusSupported) {
+			self.device!.smoothAutoFocusEnabled = true
+		}
+		if (self.device!.lowLightBoostSupported) {
+			self.device!.automaticallyEnablesLowLightBoostWhenAvailable = true
+		}
+		self.device!.whiteBalanceMode = AVCaptureWhiteBalanceMode.ContinuousAutoWhiteBalance
+		self.device!.exposureMode = AVCaptureExposureMode.ContinuousAutoExposure
+		self.device!.unlockForConfiguration()
+		self.session!.addInput(self.input)
+		
 	}
 	
 	/*
@@ -58,41 +116,11 @@ class TimeLapseFotoGenerator: NSObject {
 	*/
 	
 	func getImage() {
-		let session:AVCaptureSession = AVCaptureSession()
-		session.sessionPreset = AVCaptureSessionPresetHigh
-
-		let devices:[AVCaptureDevice] = AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo) as! [AVCaptureDevice]
-		
-		for checkedDevice:AVCaptureDevice in devices {
-			let formats = checkedDevice.formats
-			let activeFormat = checkedDevice.activeFormat
-			let uniqueID = checkedDevice.uniqueID
-		}
-		
-		
-		let device:AVCaptureDevice = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
-		let error:NSErrorPointer = nil
-		device.lockForConfiguration(error)
-		if (device.isFocusModeSupported(AVCaptureFocusMode.ContinuousAutoFocus)) {
-			device.focusMode = AVCaptureFocusMode.ContinuousAutoFocus
-		}
-		if (device.smoothAutoFocusSupported) {
-			device.smoothAutoFocusEnabled = true
-		}
-		if (device.lowLightBoostSupported) {
-			device.automaticallyEnablesLowLightBoostWhenAvailable = true
-		}
-		device.whiteBalanceMode = AVCaptureWhiteBalanceMode.ContinuousAutoWhiteBalance
-		device.exposureMode = AVCaptureExposureMode.ContinuousAutoExposure
-		device.unlockForConfiguration()
-		let input:AVCaptureDeviceInput = AVCaptureDeviceInput.deviceInputWithDevice(device, error:error) as! AVCaptureDeviceInput
-		session.addInput(input)
-		
 		let stillImageOutput:AVCaptureStillImageOutput = AVCaptureStillImageOutput()
-		//stillImageOutput.outputSettings = [AVVideoCodecKey: AVVideoCodecJPEG]
-		stillImageOutput.outputSettings = [kCVPixelBufferPixelFormatTypeKey: kCVPixelFormatType_32BGRA]
+		stillImageOutput.outputSettings = [AVVideoCodecKey: AVVideoCodecJPEG]
+		//stillImageOutput.outputSettings = [kCVPixelBufferPixelFormatTypeKey: kCVPixelFormatType_32BGRA]
 		stillImageOutput.highResolutionStillImageOutputEnabled = true
-		session.addOutput(stillImageOutput)
+		self.session!.addOutput(stillImageOutput)
 		var videoConnection:AVCaptureConnection?
 		let connections:[AVCaptureConnection] = stillImageOutput.connections as! [AVCaptureConnection]
 		for connection:AVCaptureConnection in connections {
@@ -108,8 +136,6 @@ class TimeLapseFotoGenerator: NSObject {
 			}
 		}
 		
-		session.startRunning()
-		
 		stillImageOutput.captureStillImageAsynchronouslyFromConnection(videoConnection, completionHandler: { (imageSampleBuffer:CMSampleBuffer!, error:NSError!) -> Void in
 			let imageData:NSData = self.imageDataFromSampleBuffer(imageSampleBuffer)
 			self.dataHandler.storeData(imageData, withName: "timeLapsImage_\(self.imageCounter).jpg")
@@ -117,7 +143,6 @@ class TimeLapseFotoGenerator: NSObject {
 			formatter.dateStyle = NSDateFormatterStyle.ShortStyle
 			formatter.timeStyle = NSDateFormatterStyle.LongStyle
 			println("finished to generate image now: \(formatter.stringFromDate(NSDate()))")
-			session.stopRunning()
 		})
 	}
 	

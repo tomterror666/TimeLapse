@@ -20,18 +20,20 @@ class ViewController: UIViewController, TimeLapseFotoGeneratorDelegate {
 	@IBOutlet weak var imageProgress: UIProgressView!
 	@IBOutlet weak var prevButton: UIButton!
 	@IBOutlet weak var nextButton: UIButton!
+	@IBOutlet weak var previewView: UIView!
 	
 	var fotoGenerator:TimeLapseFotoGenerator!
 	
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		self.fotoGenerator = TimeLapseFotoGenerator(viewController: self, delegate: self)
+		
 	}
 	
 	override func viewWillAppear(animated: Bool) {
 		super.viewWillAppear(animated)
 		
+		self.fotoGenerator = TimeLapseFotoGenerator(viewController: self, withPreviewView:self.previewView, withDelegate: self)
 		ViewConfiguration.configureLabelWithFontAndTitle(self.durationLabel, font: RunningText17, title: "")
 		ViewConfiguration.configureButtonWithFontAndTitle(self.startStopButton, font: RunningTextBold19, title: "Start")
 		ViewConfiguration.configureButtonWithFontAndTitle(self.playButton, font: RunningTextBold19, title: "Play")
@@ -56,9 +58,11 @@ class ViewController: UIViewController, TimeLapseFotoGeneratorDelegate {
 		if (startStopButton.tag == stopButtonTag) {
 			self.setStartStatusToButton()
 			fotoGenerator.stopTimeLapsing()
+			self.previewView.hidden = true
 		} else {
 			self.setStopStatusToButton()
 			self.enableHiddenViews(false)
+			self.previewView.hidden = false
 			fotoGenerator.startTimeLapsing()
 		}
 		
